@@ -1,11 +1,11 @@
 'use strict'
 
-module.exports.hello = async (event) => {
-    return {
+module.exports.createNote = async (event, context, callback) => {
+    console.log(event)
+    
+    const response = {
         statusCode: 200,
-        body: JSON.stringify({
-            message: "Go serverless, you function executed successfully",
-            input: event
-        })
-    }
+        body: JSON.stringify({ message: 'Hello World!' }),
+    };
+    callback(null, response);
 }

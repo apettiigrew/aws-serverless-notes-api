@@ -11,8 +11,8 @@ stages:
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
   iam:
     role:
       statements:
@@ -30,12 +30,17 @@ provider:
     USERS_TABLE: ${param:tableName}
 
 functions:
-  hello:
-    handler: ./src/functions/api/handler.hello
+  createNote:
+    name: createNote
+    description: This function creates a note in the Note Table in DynamoDB
+    memorySize: 1024 # optional, in MB, default is 1024
+    timeout: 15 # optional, in seconds, default is 6
+    reservedConcurrency: 5
+    handler: ./src/functions/api/handler.createNote
     events:
       - httpApi:
-        method: GET
-        path: /events
+          method: POST
+          path: /notes
 
 resources:
   Resources:
