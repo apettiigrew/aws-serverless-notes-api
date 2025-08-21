@@ -7,5 +7,16 @@
     "@aws-sdk/lib-dynamodb": "^3.585.0",
     "express": "^4.19.2",
     "serverless-http": "^3.2.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "deploy": "serverless deploy",
+    "dev": "serverless offline",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "serverless-plugin-typescript": "^2.1.5",
+    "typescript": "^5.9.2"
   }
 }

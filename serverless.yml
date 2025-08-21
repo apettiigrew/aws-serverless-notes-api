@@ -13,21 +13,6 @@ provider:
   runtime: nodejs20.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - Fn::GetAtt: [UsersTable, Arn]
-  environment:
-    USERS_TABLE: ${param:tableName}
 
 functions:
   createNote:
@@ -36,22 +21,8 @@ functions:
     memorySize: 1024 # optional, in MB, default is 1024
     timeout: 15 # optional, in seconds, default is 6
     reservedConcurrency: 5
-    handler: ./src/functions/api/handler.createNote
+    handler: src/functions/api/handler.createNote
     events:
       - httpApi:
           method: POST
           path: /notes
-
-resources:
-  Resources:
-    UsersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${param:tableName}
