@@ -1,6 +1,5 @@
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: express-api-dynamodb
-
+service: notes-service
 frameworkVersion: "4"
 
 stages:
@@ -26,3 +25,64 @@ functions:
       - httpApi:
           method: POST
           path: /notes
+  updateNote:
+    name: updateNote
+    description: This function update a note in the Note Table in DynamoDB
+    memorySize: 1024 # optional, in MB, default is 1024
+    timeout: 15 # optional, in seconds, default is 6
+    reservedConcurrency: 5
+    handler: src/functions/api/handler.updateNote
+    events:
+      - httpApi:
+          method: PUT
+          path: /notes/{id}
+
+  deleteNote:
+    name: deleteNote
+    description: This function delete a note in the Note Table in DynamoDB
+    memorySize: 1024 # optional, in MB, default is 1024
+    timeout: 15 # optional, in seconds, default is 6
+    reservedConcurrency: 5
+    handler: src/functions/api/handler.deleteNote
+    events:
+      - httpApi:
+          method: DELETE
+          path: /notes/{id}
+
+  fetchNoteById:
+    name: fetchNoteById
+    description: This function fetch a note in the Note Table in DynamoDB
+    memorySize: 1024 # optional, in MB, default is 1024
+    timeout: 15 # optional, in seconds, default is 6
+    reservedConcurrency: 5
+    handler: src/functions/api/handler.fetchNoteById  
+    events:
+      - httpApi:
+          method: GET
+          path: /notes/{id}
+  fetchNotes:
+    name: fetchNotes
+    description: This function fetch all note in the Note Table in DynamoDB
+    memorySize: 1024 # optional, in MB, default is 1024
+    timeout: 15 # optional, in seconds, default is 6
+    reservedConcurrency: 5
+    handler: src/functions/api/handler.fetchNotes
+    events:
+      - httpApi:
+          method: GET
+          path: /notes
+
+resources:
+  Resources:
+    NotesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: notes-table
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+
