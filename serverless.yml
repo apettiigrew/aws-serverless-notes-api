@@ -2,16 +2,14 @@
 service: notes-service
 frameworkVersion: "4"
 
-stages:
-  default:
-    params:
-      tableName:  "notes-table-${sls:stage}"
-
 provider:
   name: aws
   runtime: nodejs20.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+  environment:
+    NOTES_TABLE_NAME: !Ref NotesTable
+
   iam:
     role:
       statements:
@@ -90,7 +88,7 @@ resources:
     NotesTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: notes-table
+        TableName: notes-table-${self:provider.stage}
         BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: id

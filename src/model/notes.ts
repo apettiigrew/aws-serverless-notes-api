@@ -11,5 +11,9 @@ export const createNoteSchema = z.object({
     name: z.string().min(1, "Name is required"),
 });
 
+export const updateNoteSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+});
+
 
 
