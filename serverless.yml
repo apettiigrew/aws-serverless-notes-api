@@ -7,8 +7,22 @@ provider:
   runtime: nodejs20.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+  apiGateway:
+    usagePlan:
+      throttle:
+        burstLimit: 10
+        rateLimit: 50
+      quota:
+        limit: 10000
+        period: DAY
+        offset: 0
+    apiKeys:
+      - name: api-key-${self:provider.stage}
+        value: super-secret-api-key
   environment:
     NOTES_TABLE_NAME: !Ref NotesTable
+    COGNITO_USERPOOL_ID: !Ref CognitoUserPool
+    COGNITO__WEBCLIENT_ID: !Ref CognitoUserPoolWebclient
 
   iam:
     role:
@@ -25,6 +39,10 @@ provider:
             - Fn::GetAtt: [NotesTable, Arn]
 
 functions:
+  authorizer:
+    name: authorizer
+    description: This function authorizes the request
+    handler: src/functions/authorizer.handler
   createNote:
     name: createNote
     description: This function creates a note in the Note Table in DynamoDB
@@ -33,9 +51,11 @@ functions:
     reservedConcurrency: 5
     handler: src/functions/api/handler.createNote
     events:
-      - httpApi:
+      - http:
           method: POST
           path: /notes
+          cors: true
+          authorizer: authorizer
   updateNote:
     name: updateNote
     description: This function update a note in the Note Table in DynamoDB
@@ -44,9 +64,11 @@ functions:
     reservedConcurrency: 5
     handler: src/functions/api/handler.updateNote
     events:
-      - httpApi:
+      - http:
           method: PUT
           path: /notes/{id}
+          cors: true
+          authorizer: authorizer
 
   deleteNote:
     name: deleteNote
@@ -56,9 +78,11 @@ functions:
     reservedConcurrency: 5
     handler: src/functions/api/handler.deleteNote
     events:
-      - httpApi:
+      - http:
           method: DELETE
           path: /notes/{id}
+          cors: true
+          authorizer: authorizer
 
   fetchNoteById:
     name: fetchNoteById
@@ -68,9 +92,11 @@ functions:
     reservedConcurrency: 5
     handler: src/functions/api/handler.fetchNoteById  
     events:
-      - httpApi:
+      - http:
           method: GET
           path: /notes/{id}
+          cors: true
+          authorizer: authorizer
   fetchNotes:
     name: fetchNotes
     description: This function fetch all note in the Note Table in DynamoDB
@@ -79,21 +105,15 @@ functions:
     reservedConcurrency: 5
     handler: src/functions/api/handler.fetchNotes
     events:
-      - httpApi:
+      - http:
           method: GET
           path: /notes
+          cors: true
+          authorizer: 
+            name: userpool_auth
+            arn: !GetAtt CognitoUserPool.Arn
+            
 
 resources:
   Resources:
-    NotesTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: notes-table-${self:provider.stage}
-        BillingMode: PAY_PER_REQUEST
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-
+    ${file(resources.yml)}

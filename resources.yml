@@ -1,0 +1,62 @@
+
+NotesTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: notes-table-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+    AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+CognitoUserPool:
+  Type: AWS::Cognito::UserPool
+  Properties:
+    UserPoolName: notes-user-pool-${self:provider.stage}
+    Schema:
+      - Name: email
+        Required: true
+        Mutable: true
+    AutoVerifiedAttributes:
+      - email
+    Policies:
+      PasswordPolicy:
+        MinimumLength: 8
+        RequireLowercase: true
+        RequireNumbers: true
+        RequireSymbols: false
+        RequireUppercase: true
+
+CognitoUserPoolWebclient:
+  Type: AWS::Cognito::UserPoolClient
+  Properties:
+    UserPoolId: !Ref CognitoUserPool
+    ClientName: web
+    AllowedOAuthFlowsUserPoolClient: true
+    SupportedIdentityProviders:
+      - COGNITO
+    AllowedOAuthScopes:
+      - phone
+      - email
+      - profile
+      - openid
+    AllowedOAuthFlows:
+      - implicit
+    CallbackURLs:
+      - http://localhost:3000
+
+# User pool domain
+CognitoUserPoolDoamin:
+  Type: AWS::Cognito::UserPoolDomain
+  Properties:
+    UserPoolId: !Ref CognitoUserPool
+    Domain: mynotescd
+
+# Application parameters
+UserPoolIdParam:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /notes/dev/userPoolId
+    Type: String
+    Value: !GetAtt CognitoUserPool.Arn
