@@ -51,7 +51,7 @@ CognitoUserPoolDoamin:
   Type: AWS::Cognito::UserPoolDomain
   Properties:
     UserPoolId: !Ref CognitoUserPool
-    Domain: mynotescd
+    Domain: pettimynotescd
 
 # Application parameters
 UserPoolIdParam:

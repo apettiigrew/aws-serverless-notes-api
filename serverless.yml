@@ -110,8 +110,8 @@ functions:
           path: /notes
           cors: true
           authorizer: 
-            name: userpool_auth
-            arn: !GetAtt CognitoUserPool.Arn
+            name: userpoolAuth
+            arn: ${ssm:/notes/dev/userPoolId}
             
 
 resources:
