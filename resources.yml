@@ -54,9 +54,9 @@ CognitoUserPoolDoamin:
     Domain: pettimynotescd
 
 # Application parameters
-UserPoolIdParam:
+UserPoolArnParam:
   Type: AWS::SSM::Parameter
   Properties:
-    Name: /notes/dev/userPoolId
+    Name: /notes/dev/userPoolArn
     Type: String
     Value: !GetAtt CognitoUserPool.Arn
