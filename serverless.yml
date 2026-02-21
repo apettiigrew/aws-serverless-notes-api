@@ -1,6 +1,4 @@
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: notes-service
-frameworkVersion: "4"
 
 provider:
   name: aws
@@ -112,12 +110,11 @@ functions:
           authorizer: 
             name: userpoolAuth
             type: COGNITO_USER_POOLS
-            arn: ${ssm:/notes/${self:provider:stage}/userPoolArn}
+            arn: !GetAtt CognitoUserPool.Arn
             
 
 plugins:
-  - serveless-iam-roles-per-function
-
+  - serverless-iam-roles-per-function
 
 resources:
   Resources:
