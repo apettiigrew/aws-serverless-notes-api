@@ -13,8 +13,8 @@ jobs:
       matrix:
         node-version: [20.x]
     environment:
-      - name: production
-      - url: https://test.com
+      name: production
+      url: https://test.com
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
