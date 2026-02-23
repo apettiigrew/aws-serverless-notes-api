@@ -36,6 +36,20 @@ provider:
           Resource:
             - Fn::GetAtt: [NotesTable, Arn]
 
+
+package:
+  individually: true
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+    
+build:
+  esbuild:
+     minify: true 
+     bundle: true
+
 functions:
   authorizer:
     name: authorizer
@@ -114,7 +128,7 @@ functions:
             
 
 plugins:
-  - serverless-iam-roles-per-function
+  - serverless-prune-plugin
 
 resources:
   Resources:
