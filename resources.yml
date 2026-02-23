@@ -33,6 +33,9 @@ CognitoUserPoolWebclient:
   Properties:
     UserPoolId: !Ref CognitoUserPool
     ClientName: web
+    ExplicitAuthFlows:
+      - ALLOW_ADMIN_USER_PASSWORD_AUTH
+      - ALLOW_REFRESH_TOKEN_AUTH
     AllowedOAuthFlowsUserPoolClient: true
     SupportedIdentityProviders:
       - COGNITO

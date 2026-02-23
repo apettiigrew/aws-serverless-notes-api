@@ -20,7 +20,7 @@ provider:
   environment:
     NOTES_TABLE_NAME: !Ref NotesTable
     COGNITO_USERPOOL_ID: !Ref CognitoUserPool
-    COGNITO__WEBCLIENT_ID: !Ref CognitoUserPoolWebclient
+    COGNITO_WEBCLIENT_ID: !Ref CognitoUserPoolWebclient
 
   iam:
     role:
@@ -35,6 +35,20 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [NotesTable, Arn]
+
+
+package:
+  individually: true
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+    
+build:
+  esbuild:
+     minify: true 
+     bundle: true
 
 functions:
   authorizer:
@@ -114,7 +128,7 @@ functions:
             
 
 plugins:
-  - serverless-iam-roles-per-function
+  - serverless-prune-plugin
 
 resources:
   Resources:

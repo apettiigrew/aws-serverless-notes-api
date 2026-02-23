@@ -137,7 +137,6 @@ export const updateNote = async (event: APIGatewayProxyEvent, context: Context, 
     }
 };
 
-
 export const deleteNote = async (event: APIGatewayProxyEvent, context: Context, callback: Callback<APIGatewayProxyResult>): Promise<void> => {
     if (!event.pathParameters || !event.pathParameters.id) {
         return callback(null, {
@@ -225,7 +224,6 @@ export const fetchNoteById = async (event: APIGatewayProxyEvent, context: Contex
         });
     }
 };
-
 
 export const fetchNotes = async (event: APIGatewayProxyEvent, context: Context, callback: Callback<APIGatewayProxyResult>): Promise<void> => {
     try {
