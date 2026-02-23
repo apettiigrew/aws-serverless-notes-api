@@ -20,7 +20,7 @@ provider:
   environment:
     NOTES_TABLE_NAME: !Ref NotesTable
     COGNITO_USERPOOL_ID: !Ref CognitoUserPool
-    COGNITO__WEBCLIENT_ID: !Ref CognitoUserPoolWebclient
+    COGNITO_WEBCLIENT_ID: !Ref CognitoUserPoolWebclient
 
   iam:
     role:

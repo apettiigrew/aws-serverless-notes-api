@@ -33,7 +33,7 @@ export async function request(
     init.body = JSON.stringify(body);
   }
 
-  console.log(url,init)
+  // console.log(url,init)
   return await fetch(url, init);
 }
 
@@ -46,6 +46,21 @@ export async function createNote(
 ): Promise<Response> {
   return await request("/notes", {
     method: "POST",
+    body: { name },
+    idToken,
+  });
+}
+
+/**
+ * Updates a note via PUT /notes/:id. Uses the shared request helper.
+ */
+export async function updateNote(
+  noteId: string,
+  name: string,
+  idToken: string
+): Promise<Response> {
+  return await request(`/notes/${noteId}`, {
+    method: "PUT",
     body: { name },
     idToken,
   });

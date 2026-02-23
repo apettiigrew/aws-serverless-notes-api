@@ -7,7 +7,7 @@ const COGNITO_WEBCLIENT_ID = process.env.COGNITO_WEBCLIENT_ID;
 const jwtVerify = CognitoJwtVerifier.create({
     userPoolId:COGNITO_USERPOOL_ID ?? "",
     tokenUse: "id",
-    clientId:COGNITO_WEBCLIENT_ID ?? ""
+    clientId: COGNITO_WEBCLIENT_ID ?? ""
 })
 
 interface PolicyDocument {
@@ -33,6 +33,12 @@ const generatePolicy = (
     const authResponse: AuthResponse = {
         principalId,
     };
+
+    var tmp = resource.split(":");
+    var apiGatewayArnTmp = tmp[5].split('/');
+    
+    // Create wildcard resource
+    var resource = tmp[0] + ":" + tmp[1] + ":" + tmp[2] + ":" + tmp[3] + ":" + tmp[4] + ":" + apiGatewayArnTmp[0] + '/*/*'; 
 
     if (effect && resource) {
         const policyDocument: PolicyDocument = {
