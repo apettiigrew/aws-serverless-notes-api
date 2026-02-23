@@ -2,12 +2,12 @@ import { APIGatewayRequestAuthorizerEvent, Context } from "aws-lambda";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 
 const COGNITO_USERPOOL_ID = process.env.COGNITO_USERPOOL_ID;
-const COGNITO__WEBCLIENT_ID = process.env.COGNITO__WEBCLIENT_ID;
+const COGNITO_WEBCLIENT_ID = process.env.COGNITO_WEBCLIENT_ID;
 
 const jwtVerify = CognitoJwtVerifier.create({
-    userPoolId:COGNITO_USERPOOL_ID,
+    userPoolId:COGNITO_USERPOOL_ID ?? "",
     tokenUse: "id",
-    clientId:COGNITO__WEBCLIENT_ID
+    clientId:COGNITO_WEBCLIENT_ID ?? ""
 })
 
 interface PolicyDocument {
@@ -57,17 +57,20 @@ const generatePolicy = (
 };
 
 export const handler = async (event:APIGatewayRequestAuthorizerEvent,context:Context,callback:CallableFunction) => {
-    const token = event.headers?.Authorization || event.headers?.authorization;
+    console.log(event)
+    const token = (event as { authorizationToken?: string }).authorizationToken
+    console.log(token);
     if (!token) {
+        console.log("token not present")
         return generatePolicy("user", "Deny", event.methodArn!);
     }
     
     try {
         const payload = await jwtVerify.verify(token);
-        console.log(JSON.stringify(payload));
-
-    } catch(err){
-                return generatePolicy("user", "Deny", event.methodArn!);
+        return generatePolicy(payload.sub ?? "user", "Allow", event.methodArn!);
+    } catch (err) {
+        console.log(err);
+        return generatePolicy("user", "Deny", event.methodArn!);
     }
 }
 

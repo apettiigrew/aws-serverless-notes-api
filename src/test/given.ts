@@ -15,10 +15,11 @@ export async function signInAndGetIdToken(
 ): Promise<string> {
   const poolId = testConfig.cognito.userPoolId;
   const appClientId = testConfig.cognito.clientId;
-  const user = username ?? testConfig.testUser.username;
+  const user = username ?? testConfig.testUser.username
   const pass = password ?? testConfig.testUser.password;
   const region = testConfig.aws.region;
 
+  console.log(poolId, appClientId, user, pass, region);
   if (!poolId || !appClientId || !user || !pass) {
     throw new Error(
       "Cognito sign-in requires USER_POOL_ID, CLIENT_ID, USERNAME, and PASSWORD in .env"

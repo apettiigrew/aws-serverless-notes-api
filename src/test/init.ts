@@ -8,8 +8,8 @@ export const testConfig = {
     provider: process.env.PROVIDER ?? "",
   },
   cognito: {
-    userPoolId: process.env.USER_POOL_ID ?? "",
-    clientId: process.env.CLIENT_ID ?? "",
+    userPoolId: process.env.COGNITO_USERPOOL_ID ?? "",
+    clientId: process.env.COGNITO_WEBCLIENT_ID ?? "",
   },
   tables: {
     notes: process.env.NOTES_TABLE ?? "",
@@ -20,6 +20,9 @@ export const testConfig = {
   testUser: {
     username: process.env.USERNAME ?? "",
     password: process.env.PASSWORD ?? "",
+  },
+  api: {
+    baseUrl: process.env.TEST_ROOT ?? "",
   },
 } as const;
 
